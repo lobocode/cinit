@@ -1,7 +1,7 @@
 ## Cinit
 
-This is a tool that automates the creation of a directory structure for projects write in C language. 
-
+This is a tool that automates the creation of a directory structure for projects write in C language based on
+[api csswg - Project Directories](https://api.csswg.org/bikeshed/?force=1&url=https%3A%2F%2Fraw.githubusercontent.com%2Fvector-of-bool%2Fpitchfork%2Fdevelop%2Fdata%2Fspec.bs#intro.dirs).
 
 ## How to install
 
