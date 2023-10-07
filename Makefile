@@ -10,6 +10,7 @@ INSTALL_PATH = /usr/local/bin
 all: $(BINDIR)/$(TARGET)
 
 $(BINDIR)/$(TARGET): $(OBJ)
+	mkdir -p $(BINDIR)
 	$(CC) $(OBJ) $(CFLAGS) -o $@
 
 $(SRCDIR)/cinit.o: $(SRCDIR)/cinit.c
