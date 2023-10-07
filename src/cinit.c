@@ -4,7 +4,11 @@
 
 const char *directories[] = {
     "src",
-    "bin",
+    "build",
+    "include",
+    "data",
+    "libs",
+    "tools",
     "docs",
     "tests"
 };
