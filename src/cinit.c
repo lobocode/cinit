@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-const char *directories[] = {
+#define MAX_DIRECTORIES 8
+#define CMD_SIZE 512
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
+
+const char *directories[MAX_DIRECTORIES] = {
     "src",
     "build",
     "include",
@@ -30,22 +34,9 @@ const char *helloworld_content =
     "\treturn 0;\n"
     "}\n";
 
-void create_directories(const char *project_name, const char *name) {
-    char cmd[512];
-    snprintf(cmd, sizeof(cmd), "mkdir -p %s/%s", project_name, name);
-    system(cmd);
-}
-
-void write_file(const char *path, const char *content) {
-    FILE *f = fopen(path, "w");
-    if (!f) {
-        perror("Failed to open file for writing");
-        exit(EXIT_FAILURE);
-    }
-
-    fprintf(f, "%s", content);
-    fclose(f);
-}
+void create_directories(const char *project_name, const char *name);
+void init_git(const char *project_name);
+void write_file(const char *path, const char *content);
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -54,26 +45,50 @@ int main(int argc, char **argv) {
     }
 
     char *project_name = argv[1];
-
-    // Create main dir
     create_directories(".", project_name);
 
-
-    // Create internal subdirs
-    for (int i = 0; i < sizeof(directories) / sizeof(directories[0]); i++) {
+    for (int i = 0; i < ARRAY_SIZE(directories); i++) {
         create_directories(project_name, directories[i]);
     }
 
-    char makefile_path[512];
+    char makefile_path[CMD_SIZE];
     snprintf(makefile_path, sizeof(makefile_path), "%s/Makefile", project_name);
     write_file(makefile_path, makefile_content);
 
-    char main_path[512];
+    char main_path[CMD_SIZE];
     snprintf(main_path, sizeof(main_path), "%s/src/main.c", project_name);
     write_file(main_path, helloworld_content);
 
+    init_git(project_name);
+
     printf("Project '%s' initialized successfully!\n", project_name);
-
     return 0;
+}
 
+void create_directories(const char *project_name, const char *name) {
+    char cmd[CMD_SIZE];
+    snprintf(cmd, sizeof(cmd), "mkdir -p %s/%s", project_name, name);
+    if (system(cmd) != 0) {
+        perror("Failed to create directory");
+        exit(EXIT_FAILURE);
+    }
+}
+
+void init_git(const char *project_name) {
+    char cmd[CMD_SIZE];
+    snprintf(cmd, sizeof(cmd), "cd %s && git init", project_name);
+    if (system(cmd) != 0) {
+        perror("Failed to initialize git");
+        exit(EXIT_FAILURE);
+    }
+}
+
+void write_file(const char *path, const char *content) {
+    FILE *f = fopen(path, "w");
+    if (!f) {
+        perror("Failed to open file for writing");
+        exit(EXIT_FAILURE);
+    }
+    fprintf(f, "%s", content);
+    fclose(f);
 }
