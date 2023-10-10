@@ -37,8 +37,19 @@ const char *helloworld_content =
 void create_directories(const char *project_name, const char *name);
 void init_git(const char *project_name);
 void write_file(const char *path, const char *content);
+void print_help(const char *prog_name);
 
 int main(int argc, char **argv) {
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <project_name>\n", argv[0]);
+        return 1;
+    }
+
+    if (argc == 2 && (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)) {
+        print_help(argv[0]);
+        return 0;
+    }
+
     if (argc != 2) {
         fprintf(stderr, "Usage: %s <project_name>\n", argv[0]);
         return 1;
@@ -72,6 +83,13 @@ void create_directories(const char *project_name, const char *name) {
         perror("Failed to create directory");
         exit(EXIT_FAILURE);
     }
+}
+
+void print_help(const char *prog_name) {
+    printf("This tool initialize a new C project structure.\n");
+    printf("Usage: %s <project_name>\n", prog_name);
+    printf("Options:\n");
+    printf("  -h, --help\t\tPrint this help message\n");
 }
 
 void init_git(const char *project_name) {
